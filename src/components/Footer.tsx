@@ -1,179 +1,91 @@
-import { motion } from "motion/react";
-import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from "lucide-react";
+import React from 'react';
 
-export function Footer() {
+const quickLinks = ['Home', 'AI Diagnosis', 'Find Mechanic', 'About Us', 'How It Works', 'Pricing'];
+const services = ['Engine Diagnostics', 'Brake Repair', 'Oil Changes', 'Transmission Service', 'Electrical Systems', 'Emergency Roadside'];
+
+export default function Footer() {
   return (
-    <footer className="relative bg-black text-white overflow-hidden">
-      {/* Blueprint Pattern Background */}
-      <div className="absolute inset-0 blueprint-pattern opacity-20" />
-      
-      {/* 3D Engine Watermark */}
-      <div className="absolute right-0 bottom-0 w-96 h-96 opacity-5">
-        <svg viewBox="0 0 200 200" className="w-full h-full">
-          <g transform="translate(100,100)">
-            {/* Piston */}
-            <rect x="-30" y="-80" width="60" height="100" fill="currentColor" opacity="0.3" />
-            <circle cx="0" cy="-80" r="35" fill="currentColor" opacity="0.5" />
-            
-            {/* Connecting Rod */}
-            <rect x="-10" y="-40" width="20" height="80" fill="currentColor" opacity="0.4" />
-            
-            {/* Crankshaft */}
-            <circle cx="0" cy="40" r="25" fill="currentColor" opacity="0.6" />
-            <circle cx="0" cy="40" r="15" fill="black" />
-            
-            {/* Gears */}
-            <g transform="translate(60, 0)">
-              {[...Array(8)].map((_, i) => (
-                <rect
-                  key={i}
-                  x="-5"
-                  y="-40"
-                  width="10"
-                  height="80"
-                  fill="currentColor"
-                  opacity="0.4"
-                  transform={`rotate(${i * 45})`}
-                />
-              ))}
-              <circle cx="0" cy="0" r="25" fill="currentColor" opacity="0.5" />
-            </g>
-          </g>
-        </svg>
-      </div>
+    <footer style={{ position: 'relative', background: '#000', color: '#fff', overflow: 'hidden' }}>
+      <div className="blueprint-pattern" style={{ position: 'absolute', inset: 0, opacity: 0.2 }} />
 
-      <div className="relative container mx-auto px-4 py-16">
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-          {/* Brand Column */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <h3 className="text-white mb-4">
-              Far Car <span className="text-[#0EA5E9]">Fix</span>
+      <div style={{ position: 'relative', maxWidth: '1152px', margin: '0 auto', padding: '4rem 1rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '3rem', marginBottom: '3rem' }}>
+          {/* Brand */}
+          <div>
+            <h3 style={{ color: '#fff', marginBottom: '1rem' }}>
+              Far Car <span style={{ color: '#0EA5E9' }}>Fix</span>
             </h3>
-            <p className="text-gray-400 mb-6">
-              AI-powered automotive care meets traditional garage expertise. 
-              Your car's best friend, wherever you are.
+            <p style={{ color: '#9ca3af', marginBottom: '1.5rem', lineHeight: 1.6 }}>
+              AI-powered automotive care meets traditional garage expertise. Your car's best friend, wherever you are.
             </p>
-            <div className="flex gap-4">
-              {[Facebook, Twitter, Instagram, Linkedin].map((Icon, i) => (
-                <a
-                  key={i}
-                  href="#"
-                  className="w-10 h-10 bg-gray-800 hover:bg-[#0EA5E9] rounded-lg flex items-center justify-center transition-all duration-300 group"
-                >
-                  <Icon className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
-                </a>
-              ))}
-            </div>
-          </motion.div>
+          </div>
 
           {/* Quick Links */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-          >
-            <h4 className="text-white mb-4">Quick Links</h4>
-            <ul className="space-y-3">
-              {['Home', 'AI Diagnosis', 'Find Mechanic', 'About Us', 'How It Works', 'Pricing'].map((link, i) => (
+          <div>
+            <h4 style={{ color: '#fff', marginBottom: '1rem' }}>Quick Links</h4>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              {quickLinks.map((l, i) => (
                 <li key={i}>
-                  <a href="#" className="text-gray-400 hover:text-[#0EA5E9] transition-colors duration-300">
-                    {link}
-                  </a>
+                  <a href="#" style={{ color: '#9ca3af', textDecoration: 'none', fontSize: '0.9rem', transition: 'color 0.2s' }}
+                    onMouseEnter={e => (e.currentTarget.style.color = '#0EA5E9')}
+                    onMouseLeave={e => (e.currentTarget.style.color = '#9ca3af')}
+                  >{l}</a>
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </div>
 
           {/* Services */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <h4 className="text-white mb-4">Services</h4>
-            <ul className="space-y-3">
-              {[
-                'Engine Diagnostics',
-                'Brake Repair',
-                'Oil Changes',
-                'Transmission Service',
-                'Electrical Systems',
-                'Emergency Roadside'
-              ].map((service, i) => (
+          <div>
+            <h4 style={{ color: '#fff', marginBottom: '1rem' }}>Services</h4>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              {services.map((s, i) => (
                 <li key={i}>
-                  <a href="#" className="text-gray-400 hover:text-[#0EA5E9] transition-colors duration-300">
-                    {service}
-                  </a>
+                  <a href="#" style={{ color: '#9ca3af', textDecoration: 'none', fontSize: '0.9rem', transition: 'color 0.2s' }}
+                    onMouseEnter={e => (e.currentTarget.style.color = '#0EA5E9')}
+                    onMouseLeave={e => (e.currentTarget.style.color = '#9ca3af')}
+                  >{s}</a>
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </div>
 
           {/* Contact */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          >
-            <h4 className="text-white mb-4">Contact Us</h4>
-            <ul className="space-y-4">
-              <li className="flex items-start gap-3">
-                <Phone className="w-5 h-5 text-[#0EA5E9] mt-1 flex-shrink-0" />
-                <div>
-                  <p className="text-gray-400 text-sm">24/7 Support</p>
-                  <a href="tel:1-800-CAR-FIXX" className="text-white hover:text-[#0EA5E9] transition-colors">
-                    1-800-CAR-FIXX
-                  </a>
-                </div>
+          <div>
+            <h4 style={{ color: '#fff', marginBottom: '1rem' }}>Contact Us</h4>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <li>
+                <p style={{ color: '#9ca3af', fontSize: '0.8rem', margin: '0 0 2px' }}>24/7 Support</p>
+                <a href="tel:1-800-CAR-FIXX" style={{ color: '#fff', textDecoration: 'none', transition: 'color 0.2s' }}
+                  onMouseEnter={e => (e.currentTarget.style.color = '#0EA5E9')}
+                  onMouseLeave={e => (e.currentTarget.style.color = '#fff')}
+                >1-800-CAR-FIXX</a>
               </li>
-              <li className="flex items-start gap-3">
-                <Mail className="w-5 h-5 text-[#0EA5E9] mt-1 flex-shrink-0" />
-                <div>
-                  <p className="text-gray-400 text-sm">Email</p>
-                  <a href="mailto:help@farcarfix.com" className="text-white hover:text-[#0EA5E9] transition-colors">
-                    help@farcarfix.com
-                  </a>
-                </div>
+              <li>
+                <p style={{ color: '#9ca3af', fontSize: '0.8rem', margin: '0 0 2px' }}>Email</p>
+                <a href="mailto:help@farcarfix.com" style={{ color: '#fff', textDecoration: 'none', transition: 'color 0.2s' }}
+                  onMouseEnter={e => (e.currentTarget.style.color = '#0EA5E9')}
+                  onMouseLeave={e => (e.currentTarget.style.color = '#fff')}
+                >help@farcarfix.com</a>
               </li>
-              <li className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-[#0EA5E9] mt-1 flex-shrink-0" />
-                <div>
-                  <p className="text-gray-400 text-sm">Headquarters</p>
-                  <p className="text-white">
-                    123 Tech Drive<br />
-                    Silicon Valley, CA 94025
-                  </p>
-                </div>
+              <li>
+                <p style={{ color: '#9ca3af', fontSize: '0.8rem', margin: '0 0 2px' }}>Headquarters</p>
+                <p style={{ color: '#fff', margin: 0, fontSize: '0.9rem' }}>123 Tech Drive<br />Silicon Valley, CA 94025</p>
               </li>
             </ul>
-          </motion.div>
+          </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="pt-8 border-t border-gray-800">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-400 text-sm">
-              © 2025 Far Car Fix. All rights reserved.
-            </p>
-            <div className="flex flex-wrap gap-6 text-sm">
-              <a href="#" className="text-gray-400 hover:text-[#0EA5E9] transition-colors">
-                Privacy Policy
-              </a>
-              <a href="#" className="text-gray-400 hover:text-[#0EA5E9] transition-colors">
-                Terms of Service
-              </a>
-              <a href="#" className="text-gray-400 hover:text-[#0EA5E9] transition-colors">
-                Cookie Policy
-              </a>
-            </div>
+        {/* Bottom bar */}
+        <div style={{ paddingTop: '2rem', borderTop: '1px solid #1f2937', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
+          <p style={{ color: '#9ca3af', fontSize: '0.875rem', margin: 0 }}>© 2025 Far Car Fix. All rights reserved.</p>
+          <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
+            {['Privacy Policy', 'Terms of Service', 'Cookie Policy'].map((l, i) => (
+              <a key={i} href="#" style={{ color: '#9ca3af', textDecoration: 'none', fontSize: '0.875rem', transition: 'color 0.2s' }}
+                onMouseEnter={e => (e.currentTarget.style.color = '#0EA5E9')}
+                onMouseLeave={e => (e.currentTarget.style.color = '#9ca3af')}
+              >{l}</a>
+            ))}
           </div>
         </div>
       </div>
