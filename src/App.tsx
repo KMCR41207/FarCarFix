@@ -16,12 +16,24 @@ export interface VehicleData {
 
 function App() {
   const [diagnosisData, setDiagnosisData] = useState<VehicleData | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleStartDiagnosis = (data: VehicleData) => {
+    setIsLoading(true);
+    // 1-2 second artificial delay for animation
+    setTimeout(() => {
+      setDiagnosisData(data);
+      setIsLoading(false);
+    }, 1500);
+  };
 
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
-      <Hero onStartDiagnosis={setDiagnosisData} />
-      {diagnosisData && <DiagnosisResult data={diagnosisData} />}
+      <Hero onStartDiagnosis={handleStartDiagnosis} />
+      {(diagnosisData || isLoading) && (
+        <DiagnosisResult data={diagnosisData} isLoading={isLoading} />
+      )}
       <MechanicFinder />
       <Features />
       <Footer />
