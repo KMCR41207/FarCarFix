@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { VehicleData } from '../App';
+import Autocomplete from './Autocomplete';
 
 interface HeroProps {
   onStartDiagnosis: (data: VehicleData) => void;
@@ -12,12 +13,42 @@ const slides = [
   '/images/slide4.jpg',
 ];
 
+// Suggestion data
+const carBrands = [
+  'Toyota', 'Honda', 'Ford', 'Chevrolet', 'BMW', 'Mercedes-Benz',
+  'Volkswagen', 'Audi', 'Nissan', 'Hyundai', 'Kia', 'Mazda',
+  'Subaru', 'Lexus', 'Tesla', 'Jeep', 'Ram', 'GMC', 'Dodge',
+];
+
+const carModels: { [key: string]: string[] } = {
+  'Toyota': ['Camry', 'Corolla', 'RAV4', 'Highlander', 'Prius', 'Tacoma', 'Sienna', '4Runner'],
+  'Honda': ['Civic', 'Accord', 'CR-V', 'Pilot', 'Odyssey', 'Ridgeline'],
+  'Ford': ['F-150', 'Mustang', 'Escape', 'Explorer', 'Fusion', 'Ranger'],
+  'Chevrolet': ['Silverado', 'Cruze', 'Equinox', 'Traverse', 'Malibu', 'Impala'],
+  'BMW': ['3 Series', '5 Series', '7 Series', 'X3', 'X5', 'X7', 'M440i'],
+  'Mercedes-Benz': ['C-Class', 'E-Class', 'S-Class', 'GLC', 'GLE', 'GLS'],
+};
+
+const years = Array.from({ length: 30 }, (_, i) => String(2024 - i));
+
+const issues = [
+  'Engine noise', 'Brake issues', 'Check engine light', 'Vibration',
+  'Overheating', 'Not starting', 'Battery dead', 'Transmission problem',
+  'Air conditioning not working', 'Suspension noise', 'Tire issues',
+  'Electrical problem', 'Oil leak', 'Coolant leak', 'Strange smell',
+];
+
 export default function Hero({ onStartDiagnosis }: HeroProps) {
   const [carBrand, setCarBrand] = useState('');
   const [model, setModel] = useState('');
   const [year, setYear] = useState('');
   const [issue, setIssue] = useState('');
   const [slideIdx, setSlideIdx] = useState(0);
+
+  // Get available models based on selected brand
+  const availableModels = carBrand && carModels[carBrand] 
+    ? carModels[carBrand] 
+    : Object.values(carModels).flat();
 
   useEffect(() => {
     const timer = setInterval(() => setSlideIdx(i => (i + 1) % slides.length), 4000);
@@ -40,12 +71,6 @@ export default function Hero({ onStartDiagnosis }: HeroProps) {
   const handleFindMechanic = () => {
     const el = document.getElementById('mechanic');
     if (el) el.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const inputStyle: React.CSSProperties = {
-    width: '100%', padding: '12px 16px', borderRadius: '8px',
-    border: '1px solid #d1d5db', outline: 'none', fontSize: '0.95rem',
-    transition: 'border-color 0.2s', background: '#fff', color: '#0a0a0a',
   };
 
   return (
@@ -72,20 +97,34 @@ export default function Hero({ onStartDiagnosis }: HeroProps) {
             padding: '2rem', border: '1px solid #e5e7eb',
           }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
-              {[
-                { label: 'Car Brand', placeholder: 'e.g., Toyota', value: carBrand, set: setCarBrand },
-                { label: 'Model', placeholder: 'e.g., Camry', value: model, set: setModel },
-                { label: 'Year', placeholder: 'e.g., 2018', value: year, set: setYear },
-                { label: 'Issue', placeholder: 'e.g., Engine noise', value: issue, set: setIssue },
-              ].map(({ label, placeholder, value, set }) => (
-                <div key={label}>
-                  <label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '8px', color: '#6b7280' }}>{label}</label>
-                  <input type="text" placeholder={placeholder} value={value}
-                    onChange={e => set(e.target.value)} style={inputStyle}
-                    onFocus={e => (e.target.style.borderColor = '#0EA5E9')}
-                    onBlur={e => (e.target.style.borderColor = '#d1d5db')} />
-                </div>
-              ))}
+              <Autocomplete
+                label="Car Brand"
+                placeholder="e.g., Toyota"
+                value={carBrand}
+                onChange={setCarBrand}
+                suggestions={carBrands}
+              />
+              <Autocomplete
+                label="Model"
+                placeholder="e.g., Camry"
+                value={model}
+                onChange={setModel}
+                suggestions={availableModels}
+              />
+              <Autocomplete
+                label="Year"
+                placeholder="e.g., 2018"
+                value={year}
+                onChange={setYear}
+                suggestions={years}
+              />
+              <Autocomplete
+                label="Issue"
+                placeholder="e.g., Engine noise"
+                value={issue}
+                onChange={setIssue}
+                suggestions={issues}
+              />
             </div>
 
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
