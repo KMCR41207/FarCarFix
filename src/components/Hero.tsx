@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { VehicleData } from '../App';
 
 interface HeroProps {
@@ -18,7 +18,6 @@ export default function Hero({ onStartDiagnosis }: HeroProps) {
   const [year, setYear] = useState('');
   const [issue, setIssue] = useState('');
   const [slideIdx, setSlideIdx] = useState(0);
-  const diagnosisRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const timer = setInterval(() => setSlideIdx(i => (i + 1) % slides.length), 4000);
