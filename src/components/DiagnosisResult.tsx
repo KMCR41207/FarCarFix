@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { VehicleData } from '../App';
+import GlyphMatrix from './GlyphMatrix';
 
 interface Props {
-  data: VehicleData;
+  data: VehicleData | null;
+  isLoading?: boolean;
 }
 
 interface Result {
@@ -97,9 +99,50 @@ function analyze(data: VehicleData): Result {
   };
 }
 
-export default function DiagnosisResult({ data }: Props) {
-  const result = analyze(data);
+export default function DiagnosisResult({ data, isLoading = false }: Props) {
   const [isExpanded, setIsExpanded] = useState(false);
+  
+  if (isLoading || !data) {
+    return (
+      <div id="diagnosis-result" className="diagnosis-result">
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '400px',
+          gap: '1.5rem',
+        }}>
+          <div style={{
+            width: '100%',
+            height: '300px',
+            borderRadius: '12px',
+            overflow: 'hidden',
+            background: 'rgba(14, 165, 233, 0.1)',
+          }}>
+            <GlyphMatrix
+              glyphs="01·•+*/\\<>="
+              cellSize={14}
+              mutationRate={0.04}
+              interval={90}
+              fadeBottom={0.6}
+              color="#0EA5E9"
+            />
+          </div>
+          <div style={{
+            textAlign: 'center',
+            color: '#0EA5E9',
+            fontSize: '1rem',
+            fontWeight: 600,
+          }}>
+            AI Diagnosis in Progress...
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const result = analyze(data);
 
   return (
     <div id="diagnosis-result" className="diagnosis-result">
