@@ -74,4 +74,74 @@ function analyze(data: VehicleData): Result {
       actions: [
         'Stop driving immediately if temperature gauge is in red',
         'Let engine cool completely before opening hood',
-        'Check co
+        'Check coolant level and color',
+        'Inspect radiator for leaks or debris',
+        'Verify coolant is not boiling',
+        'Have cooling system professionally inspected',
+      ],
+      warning: 'Engine overheating can cause catastrophic engine failure. Do not ignore temperature warnings.',
+    };
+  }
+
+  // Default response for unrecognized issues
+  return {
+    issue: 'Unknown Issue',
+    confidence: 45,
+    actions: [
+      'Take a detailed photo or video of the problem',
+      'Note when the problem occurs (startup, acceleration, etc.)',
+      'Check all fluid levels: oil, coolant, transmission',
+      'Consult with a professional mechanic for diagnosis',
+    ],
+    warning: 'Unknown issues require professional inspection to prevent further damage.',
+  };
+}
+
+export default function DiagnosisResult({ data }: Props) {
+  const result = analyze(data);
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  return (
+    <div id="diagnosis-result" className="diagnosis-result">
+      <div className="result-header">
+        <h2>{result.issue}</h2>
+        <div className="confidence-badge">
+          Confidence: <strong>{result.confidence}%</strong>
+        </div>
+      </div>
+
+      <div className="warning-box">{result.warning}</div>
+
+      <div className="actions-section">
+        <h3>Recommended Actions:</h3>
+        <ol className="actions-list">
+          {result.actions.map((action, index) => (
+            <li key={index}>{action}</li>
+          ))}
+        </ol>
+      </div>
+
+      <button className="expand-btn" onClick={() => setIsExpanded(!isExpanded)}>
+        {isExpanded ? 'Hide Details' : 'Show Details'}
+      </button>
+
+      {isExpanded && (
+        <div className="details-section">
+          <h3>Diagnostic Details:</h3>
+          <p>
+            <strong>Issue Reported:</strong> {data.issue}
+          </p>
+          <p>
+            <strong>Vehicle:</strong> {data.carBrand} {data.model}
+          </p>
+          <p>
+            <strong>Analysis:</strong> Based on your description, the most likely cause is {result.issue.toLowerCase()}.
+          </p>
+          <p className="detail-note">
+            This is an AI-assisted diagnosis. For safety-critical issues, always consult with a professional mechanic.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
