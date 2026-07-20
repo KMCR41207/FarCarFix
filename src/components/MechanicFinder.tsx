@@ -9,7 +9,7 @@ const mechanics = [
   { name: 'Emily Davis', specialty: 'General Repairs', experience: '11 years', rating: 4.9, reviews: 421, location: '1.5 mi away', available: true, image: '/images/slide3.jpg' },
 ];
 
-export default function MechanicFinder() {
+export default function MechanicFinder({ onBooking }: { onBooking: () => void }) {
   const [location, setLocation] = useState('');
   const [searched, setSearched] = useState(false);
   const [booking, setBooking] = useState('');
@@ -96,7 +96,7 @@ export default function MechanicFinder() {
                   disabled={!mechanic.available}
                   onClick={(event) => {
                     event.stopPropagation();
-                    setBooking(`Booking request started for ${mechanic.name}. We will confirm availability shortly.`);
+                    onBooking();
                   }}
                 >
                   {mechanic.available ? 'Book Mechanic' : 'Unavailable'}
@@ -128,7 +128,7 @@ export default function MechanicFinder() {
                   <button
                     type="button"
                     disabled={!selectedMechanic.available}
-                    onClick={() => setBooking(`Booking request started for ${selectedMechanic.name}. We will confirm availability shortly.`)}
+                    onClick={() => onBooking()}
                   >
                     Book Mechanic
                   </button>
