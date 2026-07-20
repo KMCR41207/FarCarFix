@@ -53,8 +53,8 @@ export default function Autocomplete({
   const inputStyle = {
     width: '100%',
     padding: '12px 16px',
-    borderRadius: '8px',
-    border: '1px solid #d1d5db',
+    borderRadius: '12px',
+    border: '1px solid var(--gray-200)',
     outline: 'none',
     fontSize: '0.95rem',
     transition: 'border-color 0.2s',
@@ -88,7 +88,7 @@ export default function Autocomplete({
         }}
         style={inputStyle}
         onMouseEnter={(e) =>
-          ((e.target as HTMLInputElement).style.borderColor = '#0EA5E9')
+          ((e.target as HTMLInputElement).style.borderColor = 'var(--primary)')
         }
         onMouseLeave={(e) =>
           ((e.target as HTMLInputElement).style.borderColor = '#d1d5db')
