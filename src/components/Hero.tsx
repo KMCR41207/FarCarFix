@@ -1,195 +1,127 @@
-import React, { useState, useEffect } from 'react';
-import { VehicleData } from '../App';
-import Autocomplete from './Autocomplete';
+import React, { useEffect, useState } from 'react';
+import { motion } from 'motion/react';
+import { ArrowRight, CheckCircle2, Users } from 'lucide-react';
+import { heroSlides } from '../data/vehicleData';
 
-interface HeroProps {
-  onStartDiagnosis: (data: VehicleData) => void;
+const trustBadges = ['AI Powered', '24/7 Assistance', 'Trusted Mechanics', 'Instant Diagnosis'];
+
+const floatingCards = [
+  { label: 'Engine Health', value: '92%', style: { top: '8%', left: '-7%' } },
+  { label: 'Battery', value: 'Healthy', style: { top: '36%', right: '-10%' } },
+  { label: 'Estimated Cost', value: '$180', style: { bottom: '18%', left: '-5%' } },
+  { label: 'Diagnosis', value: 'Completed', style: { bottom: '7%', right: '5%' } },
+];
+
+function scrollTo(id: string) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-const slides = [
-  '/images/slide1.jpg',
-  '/images/slide2.jpg',
-  '/images/slide3.jpg',
-  '/images/slide4.jpg',
-];
-
-// Suggestion data
-const carBrands = [
-  'Toyota', 'Honda', 'Ford', 'Chevrolet', 'BMW', 'Mercedes-Benz',
-  'Volkswagen', 'Audi', 'Nissan', 'Hyundai', 'Kia', 'Mazda',
-  'Subaru', 'Lexus', 'Tesla', 'Jeep', 'Ram', 'GMC', 'Dodge',
-];
-
-const carModels: { [key: string]: string[] } = {
-  'Toyota': ['Camry', 'Corolla', 'RAV4', 'Highlander', 'Prius', 'Tacoma', 'Sienna', '4Runner'],
-  'Honda': ['Civic', 'Accord', 'CR-V', 'Pilot', 'Odyssey', 'Ridgeline'],
-  'Ford': ['F-150', 'Mustang', 'Escape', 'Explorer', 'Fusion', 'Ranger'],
-  'Chevrolet': ['Silverado', 'Cruze', 'Equinox', 'Traverse', 'Malibu', 'Impala'],
-  'BMW': ['3 Series', '5 Series', '7 Series', 'X3', 'X5', 'X7', 'M440i'],
-  'Mercedes-Benz': ['C-Class', 'E-Class', 'S-Class', 'GLC', 'GLE', 'GLS'],
-};
-
-const years = Array.from({ length: 30 }, (_, i) => String(2024 - i));
-
-const issues = [
-  'Engine noise', 'Brake issues', 'Check engine light', 'Vibration',
-  'Overheating', 'Not starting', 'Battery dead', 'Transmission problem',
-  'Air conditioning not working', 'Suspension noise', 'Tire issues',
-  'Electrical problem', 'Oil leak', 'Coolant leak', 'Strange smell',
-];
-
-export default function Hero({ onStartDiagnosis }: HeroProps) {
-  const [carBrand, setCarBrand] = useState('');
-  const [model, setModel] = useState('');
-  const [year, setYear] = useState('');
-  const [issue, setIssue] = useState('');
+export default function Hero() {
   const [slideIdx, setSlideIdx] = useState(0);
 
-  // Get available models based on selected brand
-  const availableModels = carBrand && carModels[carBrand] 
-    ? carModels[carBrand] 
-    : Object.values(carModels).flat();
-
   useEffect(() => {
-    const timer = setInterval(() => setSlideIdx(i => (i + 1) % slides.length), 4000);
+    const timer = setInterval(() => setSlideIdx((i) => (i + 1) % heroSlides.length), 4500);
     return () => clearInterval(timer);
   }, []);
 
-  const handleStartDiagnosis = () => {
-    if (!carBrand || !model || !year || !issue) {
-      alert('Please fill in all fields before starting diagnosis');
-      return;
-    }
-    onStartDiagnosis({ carBrand, model, year, issue });
-    // scroll to result after a tick so it renders first
-    setTimeout(() => {
-      const el = document.getElementById('diagnosis-result');
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 100);
-  };
-
-  const handleFindMechanic = () => {
-    const el = document.getElementById('mechanic');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
-    <section style={{ position: 'relative', minHeight: '100vh', background: '#fff', overflow: 'hidden' }}>
-      <div className="circuit-pattern" style={{ position: 'absolute', inset: 0, opacity: 0.5 }} />
+    <section id="home" className="grid-pattern" style={{ position: 'relative', overflow: 'hidden', paddingTop: '96px', scrollMarginTop: '96px' }}>
+      <div className="hero-glow" />
 
-      <div style={{
-        position: 'relative', maxWidth: '1152px', margin: '0 auto',
-        padding: '8rem 1rem 5rem', display: 'flex',
-        flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '3rem',
-      }}>
-        {/* Left: form */}
-        <div style={{ flex: '1 1 400px', maxWidth: '600px', zIndex: 10 }}>
-          <h1 style={{ color: '#0a0a0a', marginBottom: '1.5rem' }}>
-            Fix smarter. <span style={{ color: '#0EA5E9' }}>Drive farther.</span>
+      <div className="section-container hero-layout">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          style={{ flex: '1 1 420px', maxWidth: '590px' }}
+        >
+          <span className="section-label">AI-Powered Car Diagnostics</span>
+          <h1 style={{ color: 'var(--gray-900)', marginBottom: '1.25rem', marginTop: '1rem' }}>
+            Fix Smarter. <span style={{ color: 'var(--primary)' }}>Drive Farther.</span>
           </h1>
-          <p style={{ fontSize: '1.2rem', color: '#374151', marginBottom: '2rem', maxWidth: '480px' }}>
-            AI-powered solutions for any car trouble — and a mechanic to your location if needed.
+          <p style={{ fontSize: '1.125rem', color: 'var(--gray-600)', marginBottom: '2rem', maxWidth: '540px' }}>
+            Diagnose car problems in seconds, understand likely repair costs, and connect with trusted mechanics when your vehicle needs expert hands.
           </p>
 
-          <div style={{
-            background: '#fff', borderRadius: '16px',
-            boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)',
-            padding: '2rem', border: '1px solid #e5e7eb',
-          }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
-              <Autocomplete
-                label="Car Brand"
-                placeholder="e.g., Toyota"
-                value={carBrand}
-                onChange={setCarBrand}
-                suggestions={carBrands}
-              />
-              <Autocomplete
-                label="Model"
-                placeholder="e.g., Camry"
-                value={model}
-                onChange={setModel}
-                suggestions={availableModels}
-              />
-              <Autocomplete
-                label="Year"
-                placeholder="e.g., 2018"
-                value={year}
-                onChange={setYear}
-                suggestions={years}
-              />
-              <Autocomplete
-                label="Issue"
-                placeholder="e.g., Engine noise"
-                value={issue}
-                onChange={setIssue}
-                suggestions={issues}
-              />
-            </div>
-
-            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-              <button onClick={handleStartDiagnosis} style={{
-                flex: 1, minWidth: '160px', background: '#0a0a0a', color: '#fff',
-                border: 'none', borderRadius: '12px', padding: '16px 24px',
-                fontSize: '1rem', fontWeight: 600, cursor: 'pointer',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-                transition: 'all 0.2s',
-              }}
-                onMouseEnter={e => { e.currentTarget.style.background = '#1f2937'; e.currentTarget.style.boxShadow = '0 0 20px rgba(14,165,233,0.4)'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = '#0a0a0a'; e.currentTarget.style.boxShadow = 'none'; }}
-              >
-                <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
-                </svg>
-                Start Diagnosis
-              </button>
-
-              <button onClick={handleFindMechanic} style={{
-                flex: 1, minWidth: '160px', background: 'transparent', color: '#0EA5E9',
-                border: '2px solid #0EA5E9', borderRadius: '12px', padding: '16px 24px',
-                fontSize: '1rem', fontWeight: 600, cursor: 'pointer',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-                transition: 'all 0.2s',
-              }}
-                onMouseEnter={e => { e.currentTarget.style.background = '#0EA5E9'; e.currentTarget.style.color = '#fff'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#0EA5E9'; }}
-              >
-                <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" />
-                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                </svg>
-                Need a Mechanic?
-              </button>
-            </div>
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+            <button type="button" className="btn-primary btn-large" onClick={() => scrollTo('diagnosis')}>
+              Start Free Diagnosis
+              <ArrowRight size={18} />
+            </button>
+            <button type="button" className="btn-secondary btn-large" onClick={() => scrollTo('mechanic')}>
+              <Users size={18} />
+              Find Mechanics
+            </button>
           </div>
-        </div>
 
-        {/* Right: image carousel */}
-        <div style={{ flex: '1 1 300px', maxWidth: '480px', margin: '0 auto' }}>
-          <div style={{
-            position: 'relative', width: '100%', height: '450px',
-            borderRadius: '24px', overflow: 'hidden',
-            boxShadow: '0 25px 50px -12px rgba(0,0,0,0.4)',
-            border: '4px solid #0EA5E9',
-          }}>
-            <img src={slides[slideIdx]} alt={`Car service ${slideIdx + 1}`}
-              style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'opacity 0.8s' }}
-              onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-            <div style={{
-              position: 'absolute', bottom: '16px', left: '50%', transform: 'translateX(-50%)',
-              display: 'flex', gap: '8px',
-            }}>
-              {slides.map((_, i) => (
-                <button key={i} onClick={() => setSlideIdx(i)} style={{
-                  width: i === slideIdx ? '24px' : '8px', height: '8px',
-                  borderRadius: '4px', border: 'none', cursor: 'pointer',
-                  background: i === slideIdx ? '#0EA5E9' : 'rgba(255,255,255,0.6)',
-                  transition: 'all 0.3s',
-                }} />
+          <div className="hero-badges">
+            {trustBadges.map((badge) => (
+              <span key={badge}>
+                <CheckCircle2 size={16} />
+                {badge}
+              </span>
+            ))}
+          </div>
+
+          <div className="hero-stats">
+            {[
+              { value: '10K+', label: 'Cars Diagnosed' },
+              { value: '<30s', label: 'Avg. Diagnosis Time' },
+              { value: '4.9/5', label: 'User Rating' },
+            ].map((stat) => (
+              <div key={stat.label}>
+                <p style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--primary)', margin: 0 }}>{stat.value}</p>
+                <p style={{ fontSize: '0.875rem', color: 'var(--gray-500)', margin: 0 }}>{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, x: 32 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.7, delay: 0.15 }}
+          className="hero-visual"
+        >
+          <div className="hero-image-shell">
+            <img
+              src={heroSlides[slideIdx]}
+              alt="Mechanic repairing a modern vehicle"
+              style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'opacity 0.6s' }}
+              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+            />
+            <div className="hero-image-shade" />
+            <div className="hero-dots">
+              {heroSlides.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => setSlideIdx(i)}
+                  aria-label={`Show hero image ${i + 1}`}
+                  className={i === slideIdx ? 'active' : ''}
+                />
               ))}
             </div>
           </div>
-        </div>
+
+          {floatingCards.map((card, i) => (
+            <motion.div
+              key={card.label}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.4 + i * 0.15, duration: 0.5 }}
+              className="floating-metric-card"
+              style={{
+                ...card.style,
+                animation: `float ${3 + i * 0.5}s ease-in-out infinite`,
+                animationDelay: `${i * 0.3}s`,
+              }}
+            >
+              <p>{card.label}</p>
+              <strong>{card.value}</strong>
+            </motion.div>
+          ))}
+        </motion.div>
       </div>
     </section>
   );
