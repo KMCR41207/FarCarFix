@@ -1,94 +1,116 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Mail, MessageCircle, Phone, Share2, X } from 'lucide-react';
 
-const quickLinks = ['Home', 'AI Diagnosis', 'Find Mechanic', 'About Us', 'How It Works', 'Pricing'];
-const services = ['Engine Diagnostics', 'Brake Repair', 'Oil Changes', 'Transmission Service', 'Electrical Systems', 'Emergency Roadside'];
+const quickLinks = [
+  { label: 'Home', href: '#home' },
+  { label: 'AI Diagnosis', href: '#diagnosis' },
+  { label: 'Mechanics', href: '#mechanic' },
+  { label: 'About', href: '#about' },
+];
+
+const legalCopy = {
+  privacy: {
+    title: 'Privacy Policy',
+    body: 'Far Car Fix only uses diagnosis details to provide vehicle guidance and improve the product experience. We do not sell personal information.',
+  },
+  terms: {
+    title: 'Terms',
+    body: 'Far Car Fix provides AI-assisted guidance, not a replacement for professional inspection. For urgent or safety-critical issues, contact a certified mechanic.',
+  },
+};
+
+const scrollTo = (href: string) => {
+  document.getElementById(href.replace('#', ''))?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
 
 export default function Footer() {
+  const [legal, setLegal] = useState<keyof typeof legalCopy | null>(null);
+
+  const shareSite = async () => {
+    const shareData = {
+      title: 'Far Car Fix',
+      text: 'AI-powered car diagnostics and trusted mechanics.',
+      url: window.location.href,
+    };
+
+    if (navigator.share) {
+      await navigator.share(shareData);
+      return;
+    }
+
+    await navigator.clipboard?.writeText(window.location.href);
+    setLegal(null);
+  };
+
   return (
-    <footer style={{ position: 'relative', background: '#000', color: '#fff', overflow: 'hidden' }}>
-      <div className="blueprint-pattern" style={{ position: 'absolute', inset: 0, opacity: 0.2 }} />
-
-      <div style={{ position: 'relative', maxWidth: '1152px', margin: '0 auto', padding: '4rem 1rem' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '3rem', marginBottom: '3rem' }}>
-          {/* Brand */}
+    <footer className="footer">
+      <div className="section-container">
+        <div className="footer-grid">
           <div>
-            <h3 style={{ color: '#fff', marginBottom: '1rem' }}>
-              Far Car <span style={{ color: '#0EA5E9' }}>Fix</span>
-            </h3>
-            <p style={{ color: '#9ca3af', marginBottom: '1.5rem', lineHeight: 1.6 }}>
-              AI-powered automotive care meets traditional garage expertise. Your car's best friend, wherever you are.
-            </p>
+            <button type="button" onClick={() => scrollTo('#home')} className="footer-brand">
+              <img
+                src="/images/logo.png"
+                alt="Far Car Fix"
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+              />
+              <span>Far Car <strong>Fix</strong></span>
+            </button>
+            <p>AI-powered car diagnostics and trusted mechanics, helping you fix smarter and drive farther.</p>
+            <div className="social-links">
+              <button type="button" onClick={shareSite} aria-label="Share Far Car Fix">
+                <Share2 size={18} />
+              </button>
+              <a href="sms:?body=Try%20Far%20Car%20Fix%20for%20AI-powered%20car%20diagnosis." aria-label="Send Far Car Fix by text message">
+                <MessageCircle size={18} />
+              </a>
+              <a href="mailto:help@farcarfix.com" aria-label="Email Far Car Fix">
+                <Mail size={18} />
+              </a>
+              <a href="tel:1-800-CAR-FIXX" aria-label="Call Far Car Fix">
+                <Phone size={18} />
+              </a>
+            </div>
           </div>
 
-          {/* Quick Links */}
           <div>
-            <h4 style={{ color: '#fff', marginBottom: '1rem' }}>Quick Links</h4>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              {quickLinks.map((l, i) => (
-                <li key={i}>
-                  <a href="#" style={{ color: '#9ca3af', textDecoration: 'none', fontSize: '0.9rem', transition: 'color 0.2s' }}
-                    onMouseEnter={e => (e.currentTarget.style.color = '#0EA5E9')}
-                    onMouseLeave={e => (e.currentTarget.style.color = '#9ca3af')}
-                  >{l}</a>
+            <h4>Quick Links</h4>
+            <ul>
+              {quickLinks.map((link) => (
+                <li key={link.label}>
+                  <button type="button" onClick={() => scrollTo(link.href)}>{link.label}</button>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Services */}
           <div>
-            <h4 style={{ color: '#fff', marginBottom: '1rem' }}>Services</h4>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              {services.map((s, i) => (
-                <li key={i}>
-                  <a href="#" style={{ color: '#9ca3af', textDecoration: 'none', fontSize: '0.9rem', transition: 'color 0.2s' }}
-                    onMouseEnter={e => (e.currentTarget.style.color = '#0EA5E9')}
-                    onMouseLeave={e => (e.currentTarget.style.color = '#9ca3af')}
-                  >{s}</a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Contact */}
-          <div>
-            <h4 style={{ color: '#fff', marginBottom: '1rem' }}>Contact Us</h4>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <li>
-                <p style={{ color: '#9ca3af', fontSize: '0.8rem', margin: '0 0 2px' }}>24/7 Support</p>
-                <a href="tel:1-800-CAR-FIXX" style={{ color: '#fff', textDecoration: 'none', transition: 'color 0.2s' }}
-                  onMouseEnter={e => (e.currentTarget.style.color = '#0EA5E9')}
-                  onMouseLeave={e => (e.currentTarget.style.color = '#fff')}
-                >1-800-CAR-FIXX</a>
-              </li>
-              <li>
-                <p style={{ color: '#9ca3af', fontSize: '0.8rem', margin: '0 0 2px' }}>Email</p>
-                <a href="mailto:help@farcarfix.com" style={{ color: '#fff', textDecoration: 'none', transition: 'color 0.2s' }}
-                  onMouseEnter={e => (e.currentTarget.style.color = '#0EA5E9')}
-                  onMouseLeave={e => (e.currentTarget.style.color = '#fff')}
-                >help@farcarfix.com</a>
-              </li>
-              <li>
-                <p style={{ color: '#9ca3af', fontSize: '0.8rem', margin: '0 0 2px' }}>Headquarters</p>
-                <p style={{ color: '#fff', margin: 0, fontSize: '0.9rem' }}>123 Tech Drive<br />Silicon Valley, CA 94025</p>
-              </li>
+            <h4>Company</h4>
+            <ul>
+              <li><button type="button" onClick={() => setLegal('privacy')}>Privacy Policy</button></li>
+              <li><button type="button" onClick={() => setLegal('terms')}>Terms</button></li>
+              <li><a href="mailto:help@farcarfix.com">Contact</a></li>
             </ul>
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div style={{ paddingTop: '2rem', borderTop: '1px solid #1f2937', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
-          <p style={{ color: '#9ca3af', fontSize: '0.875rem', margin: 0 }}>© 2025 Far Car Fix. All rights reserved.</p>
-          <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
-            {['Privacy Policy', 'Terms of Service', 'Cookie Policy'].map((l, i) => (
-              <a key={i} href="#" style={{ color: '#9ca3af', textDecoration: 'none', fontSize: '0.875rem', transition: 'color 0.2s' }}
-                onMouseEnter={e => (e.currentTarget.style.color = '#0EA5E9')}
-                onMouseLeave={e => (e.currentTarget.style.color = '#9ca3af')}
-              >{l}</a>
-            ))}
-          </div>
+        <div className="footer-bottom">
+          <p>Copyright {new Date().getFullYear()} Far Car Fix. All rights reserved.</p>
+          <a href="tel:1-800-CAR-FIXX">1-800-CAR-FIXX</a>
         </div>
       </div>
+
+      {legal && (
+        <div className="footer-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="footer-modal-title">
+          <div className="footer-modal">
+            <button type="button" className="footer-modal-close" onClick={() => setLegal(null)} aria-label="Close">
+              <X size={18} />
+            </button>
+            <h3 id="footer-modal-title">{legalCopy[legal].title}</h3>
+            <p>{legalCopy[legal].body}</p>
+            <button type="button" className="btn-primary" onClick={() => setLegal(null)}>Close</button>
+          </div>
+        </div>
+      )}
     </footer>
   );
 }
