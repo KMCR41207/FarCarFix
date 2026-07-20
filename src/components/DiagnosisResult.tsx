@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { VehicleData } from '../App';
 import GlyphMatrix from './GlyphMatrix';
+import RepairCostEstimator from './RepairCostEstimator';
+import NearbyServices from './NearbyServices';
+import RepairReport from './RepairReport';
 
 interface Props {
   data: VehicleData | null;
@@ -101,7 +104,8 @@ function analyze(data: VehicleData): Result {
 
 export default function DiagnosisResult({ data, isLoading = false }: Props) {
   const [isExpanded, setIsExpanded] = useState(false);
-  
+  const [activeFeature, setActiveFeature] = useState<'cost' | 'nearby' | 'report' | null>(null);
+
   if (isLoading || !data) {
     return (
       <div id="diagnosis-result" className="diagnosis-result">
@@ -121,17 +125,17 @@ export default function DiagnosisResult({ data, isLoading = false }: Props) {
             background: 'rgba(14, 165, 233, 0.1)',
           }}>
             <GlyphMatrix
-              glyphs="01·•+*/\\<>="
+              glyphs="01.+*/\\<>="
               cellSize={14}
               mutationRate={0.04}
               interval={90}
               fadeBottom={0.6}
-              color="#0EA5E9"
+              color="var(--primary)"
             />
           </div>
           <div style={{
             textAlign: 'center',
-            color: '#0EA5E9',
+            color: 'var(--primary)',
             fontSize: '1rem',
             fontWeight: 600,
           }}>
@@ -164,7 +168,7 @@ export default function DiagnosisResult({ data, isLoading = false }: Props) {
         </ol>
       </div>
 
-      <button className="expand-btn" onClick={() => setIsExpanded(!isExpanded)}>
+      <button type="button" className="expand-btn" onClick={() => setIsExpanded(!isExpanded)}>
         {isExpanded ? 'Hide Details' : 'Show Details'}
       </button>
 
@@ -184,6 +188,47 @@ export default function DiagnosisResult({ data, isLoading = false }: Props) {
             This is an AI-assisted diagnosis. For safety-critical issues, always consult with a professional mechanic.
           </p>
         </div>
+      )}
+
+      {/* ── Intelligent Feature Launcher ── */}
+      <div className="feature-launcher">
+        <p className="feature-launcher-title">What would you like to do next?</p>
+        <div className="feature-launcher-grid">
+          {[
+            { key: 'cost' as const, emoji: '💰', label: 'AI Cost Estimator', desc: 'See DIY, garage & center pricing' },
+            { key: 'nearby' as const, emoji: '📍', label: 'Nearby Services', desc: 'Find mechanics, fuel & towing' },
+            { key: 'report' as const, emoji: '📄', label: 'Repair Report', desc: 'Download & share full report' },
+          ].map(f => (
+            <button
+              key={f.key}
+              type="button"
+              className={`feature-launcher-btn ${activeFeature === f.key ? 'active' : ''}`}
+              onClick={() => setActiveFeature(prev => prev === f.key ? null : f.key)}
+              aria-pressed={activeFeature === f.key}
+            >
+              <span style={{ fontSize: '1.75rem' }}>{f.emoji}</span>
+              <span style={{ fontWeight: 700, fontSize: '0.9rem', color: '#fff' }}>{f.label}</span>
+              <span style={{ fontSize: '0.75rem', color: '#9ca3af', lineHeight: 1.4 }}>{f.desc}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Feature Panels ── */}
+      {activeFeature === 'cost' && (
+        <RepairCostEstimator
+          issue={result.issue}
+          confidence={result.confidence}
+          carBrand={data.carBrand}
+          model={data.model}
+          year={data.year}
+        />
+      )}
+      {activeFeature === 'nearby' && (
+        <NearbyServices />
+      )}
+      {activeFeature === 'report' && (
+        <RepairReport data={data} diagnosis={result} />
       )}
     </div>
   );
