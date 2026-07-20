@@ -96,6 +96,9 @@ export default function RepairReport({ data, diagnosis }: Props) {
   const [formFilled, setFormFilled] = useState(false);
   const [copied, setCopied] = useState(false);
   const [shareStatus, setShareStatus] = useState('');
+  const [uploadedImages, setUploadedImages] = useState<{ name: string; url: string }[]>([]);
+  const [dragOver, setDragOver] = useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [reportData, setReportData] = useState<ReportData>({
     ownerName: '',
     regNumber: '',
@@ -120,6 +123,25 @@ export default function RepairReport({ data, diagnosis }: Props) {
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 200);
   };
+
+  function handleFiles(files: FileList | null) {
+    if (!files) return;
+    const allowed = Array.from(files).filter(f => f.type.startsWith('image/'));
+    allowed.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setUploadedImages(prev => [
+          ...prev,
+          { name: file.name, url: e.target?.result as string },
+        ]);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function removeImage(index: number) {
+    setUploadedImages(prev => prev.filter((_, i) => i !== index));
+  }
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href).then(() => {
@@ -283,7 +305,61 @@ export default function RepairReport({ data, diagnosis }: Props) {
           )}
         </div>
 
-        {/* Section 3: AI Diagnosis */}
+        {/* Section 3: Uploaded Images */}
+        <div className="rr-section">
+          <div className="rr-section-title"><span>📷</span> Uploaded Images</div>
+
+          {/* Drop zone */}
+          <div
+            className={`rr-dropzone ${dragOver ? 'rr-dropzone-active' : ''}`}
+            onClick={() => fileInputRef.current?.click()}
+            onDragOver={e => { e.preventDefault(); setDragOver(true); }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={e => { e.preventDefault(); setDragOver(false); handleFiles(e.dataTransfer.files); }}
+            role="button"
+            tabIndex={0}
+            aria-label="Upload vehicle images"
+            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') fileInputRef.current?.click(); }}
+          >
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              multiple
+              style={{ display: 'none' }}
+              onChange={e => handleFiles(e.target.files)}
+            />
+            <span style={{ fontSize: '2rem' }}>📸</span>
+            <p style={{ margin: '6px 0 0', color: '#9ca3af', fontSize: '0.875rem', textAlign: 'center' }}>
+              {dragOver ? 'Drop images here' : 'Click or drag images to upload'}
+            </p>
+            <p style={{ margin: '4px 0 0', color: '#6b7280', fontSize: '0.75rem' }}>
+              JPG, PNG, WEBP — multiple files supported
+            </p>
+          </div>
+
+          {/* Image grid */}
+          {uploadedImages.length > 0 && (
+            <div className="rr-image-grid">
+              {uploadedImages.map((img, i) => (
+                <div key={i} className="rr-image-thumb">
+                  <img src={img.url} alt={img.name} />
+                  <button
+                    type="button"
+                    className="rr-image-remove"
+                    onClick={() => removeImage(i)}
+                    aria-label={`Remove ${img.name}`}
+                  >
+                    ✕
+                  </button>
+                  <p className="rr-image-name">{img.name.length > 18 ? img.name.slice(0, 16) + '…' : img.name}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Section 4: AI Diagnosis */}
         <div className="rr-section">
           <div className="rr-section-title"><span>🤖</span> AI Diagnosis</div>
           <div className="rr-diagnosis-banner">
