@@ -1,69 +1,73 @@
 import React from 'react';
+import { motion } from 'motion/react';
+import { Brain, MapPinned, Route, Activity } from 'lucide-react';
 
 const features = [
-  { icon: '🤖', title: 'AI-Powered Analysis', description: 'Advanced machine learning algorithms diagnose car issues with 94% accuracy' },
-  { icon: '🔧', title: 'Expert Mechanics', description: 'ASE-certified professionals available on-demand, anywhere you are' },
-  { icon: '⚡', title: 'Instant Solutions', description: 'Get diagnostic results in seconds, not hours or days' },
-  { icon: '🛡️', title: 'Trusted Service', description: 'All mechanics are background-checked and insured for your safety' },
-  { icon: '🕐', title: '24/7 Availability', description: 'Help is always just a click away, day or night' },
-  { icon: '🎯', title: 'Precision Repairs', description: 'Data-driven approach ensures accurate fixes the first time' },
+  {
+    icon: Brain,
+    title: 'AI Diagnosis',
+    description: 'Instantly analyzes vehicle symptoms and gives you a clear next step.',
+  },
+  {
+    icon: MapPinned,
+    title: 'Nearby Mechanics',
+    description: 'Find trusted mechanics nearby with ratings, availability, and specialties.',
+  },
+  {
+    icon: Route,
+    title: 'Repair Guidance',
+    description: 'Follow step-by-step recommendations before you spend money at a shop.',
+  },
+  {
+    icon: Activity,
+    title: 'Maintenance Tracking',
+    description: 'Keep your vehicle healthy with proactive care and repair context.',
+  },
 ];
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.1, duration: 0.5 },
+  }),
+};
 
 export default function Features() {
   return (
-    <section id="about" style={{ position: 'relative', padding: '6rem 1rem', background: 'linear-gradient(135deg, #f9fafb, #fff)', overflow: 'hidden' }}>
-      <div style={{ position: 'absolute', top: 0, left: 0, width: '384px', height: '384px', background: 'rgba(14,165,233,0.05)', borderRadius: '50%', filter: 'blur(64px)' }} />
-      <div style={{ position: 'absolute', bottom: 0, right: 0, width: '384px', height: '384px', background: 'rgba(0,0,0,0.03)', borderRadius: '50%', filter: 'blur(64px)' }} />
+    <section className="section-padding" style={{ background: '#fff' }}>
+      <div className="section-container">
+        <motion.div
+          className="section-header"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          <span className="section-label">Platform</span>
+          <h2>Everything you need to fix with confidence</h2>
+          <p>Smart diagnostics, practical repair guidance, and mechanic booking in one polished workflow.</p>
+        </motion.div>
 
-      <div style={{ maxWidth: '1152px', margin: '0 auto', position: 'relative' }}>
-        <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-          <h2 style={{ color: '#0a0a0a', marginBottom: '1rem' }}>
-            Where <span style={{ color: '#0EA5E9' }}>Technology</span> Meets Tradition
-          </h2>
-          <p style={{ color: '#374151', fontSize: '1.2rem', maxWidth: '700px', margin: '0 auto' }}>
-            Far Car Fix combines the wisdom of classic garage expertise with cutting-edge AI technology to deliver the future of automotive care
-          </p>
-        </div>
-
-        {/* Feature grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
-          {features.map((f, i) => (
-            <div key={i} style={{
-              background: '#fff', borderRadius: '16px', padding: '2rem',
-              border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.07)',
-              transition: 'all 0.2s', cursor: 'default',
-            }}
-              onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(0,0,0,0.12)'; e.currentTarget.style.transform = 'translateY(-4px)'; }}
-              onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0,0,0,0.07)'; e.currentTarget.style.transform = 'none'; }}
+        <div className="feature-grid">
+          {features.map((feature, i) => (
+            <motion.div
+              key={feature.title}
+              className="landing-card feature-card"
+              custom={i}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: '-40px' }}
+              variants={fadeUp}
+              whileHover={{ y: -6, scale: 1.01 }}
             >
-              <div style={{
-                width: '56px', height: '56px', background: 'rgba(14,165,233,0.1)',
-                borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '1.75rem', marginBottom: '1rem',
-              }}>
-                {f.icon}
+              <div className="icon-box" style={{ marginBottom: '1.25rem' }}>
+                <feature.icon size={24} />
               </div>
-              <h4 style={{ color: '#0a0a0a', marginBottom: '0.5rem' }}>{f.title}</h4>
-              <p style={{ color: '#6b7280', fontSize: '0.9rem', margin: 0, lineHeight: 1.6 }}>{f.description}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Stats row */}
-        <div style={{
-          display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
-          gap: '2rem', marginTop: '5rem', textAlign: 'center',
-        }}>
-          {[
-            { value: '94%', label: 'Diagnosis Accuracy' },
-            { value: '50K+', label: 'Cars Diagnosed' },
-            { value: '2,000+', label: 'Certified Mechanics' },
-            { value: '4.9★', label: 'Average Rating' },
-          ].map((s, i) => (
-            <div key={i}>
-              <p style={{ fontSize: '2.5rem', fontWeight: 700, color: '#0EA5E9', margin: 0, fontFamily: 'Orbitron, sans-serif' }}>{s.value}</p>
-              <p style={{ color: '#6b7280', margin: 0, fontSize: '0.9rem' }}>{s.label}</p>
-            </div>
+              <h3 style={{ marginBottom: '0.5rem', color: 'var(--gray-900)' }}>{feature.title}</h3>
+              <p style={{ color: 'var(--gray-600)', fontSize: '0.9375rem', margin: 0 }}>{feature.description}</p>
+            </motion.div>
           ))}
         </div>
       </div>
