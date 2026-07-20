@@ -7,7 +7,7 @@ const navLinks = [
   { name: 'About', href: '#about' },
 ];
 
-export default function Navbar() {
+export default function Navbar({ onBooking, onProfile }: { onBooking: () => void; onProfile: () => void }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState('home');
@@ -85,6 +85,12 @@ export default function Navbar() {
             <button type="button" onClick={() => handleNav('#diagnosis')} className="btn-primary" style={{ padding: '0.625rem 1.25rem', fontSize: '0.875rem' }}>
               Start Diagnosis
             </button>
+            <button type="button" onClick={onBooking} className="btn-secondary" style={{ padding: '0.625rem 1.25rem', fontSize: '0.875rem' }}>
+              Book Mechanic
+            </button>
+            <button type="button" onClick={onProfile} style={{ background: 'transparent', border: '1.5px solid var(--gray-200)', borderRadius: '999px', width: 38, height: 38, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem' }} aria-label="My Profile">
+              👤
+            </button>
           </div>
 
           <button
@@ -125,6 +131,12 @@ export default function Navbar() {
               ))}
               <button type="button" className="btn-primary" onClick={() => handleNav('#diagnosis')} style={{ textAlign: 'center', marginTop: '0.5rem' }}>
                 Start Diagnosis
+              </button>
+              <button type="button" className="btn-secondary" onClick={onBooking} style={{ textAlign: 'center' }}>
+                Book Mechanic
+              </button>
+              <button type="button" style={{ background: 'transparent', border: 0, padding: '0.5rem 0', fontWeight: 600, fontSize: '1rem', color: 'var(--gray-600)', textAlign: 'left', cursor: 'pointer' }} onClick={onProfile}>
+                👤 My Profile
               </button>
             </div>
           </div>
