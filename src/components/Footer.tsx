@@ -23,7 +23,7 @@ const scrollTo = (href: string) => {
   document.getElementById(href.replace('#', ''))?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 };
 
-export default function Footer() {
+export default function Footer({ onBooking, onProfile }: { onBooking: () => void; onProfile: () => void }) {
   const [legal, setLegal] = useState<keyof typeof legalCopy | null>(null);
 
   const shareSite = async () => {
@@ -80,6 +80,8 @@ export default function Footer() {
                   <button type="button" onClick={() => scrollTo(link.href)}>{link.label}</button>
                 </li>
               ))}
+              <li><button type="button" onClick={onBooking}>Book a Mechanic</button></li>
+              <li><button type="button" onClick={onProfile}>My Profile</button></li>
             </ul>
           </div>
 
