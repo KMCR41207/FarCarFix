@@ -16,7 +16,7 @@ function scrollTo(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-export default function Hero() {
+export default function Hero({ onBooking }: { onBooking: () => void }) {
   const [slideIdx, setSlideIdx] = useState(0);
 
   useEffect(() => {
@@ -48,9 +48,9 @@ export default function Hero() {
               Start Free Diagnosis
               <ArrowRight size={18} />
             </button>
-            <button type="button" className="btn-secondary btn-large" onClick={() => scrollTo('mechanic')}>
+            <button type="button" className="btn-secondary btn-large" onClick={onBooking}>
               <Users size={18} />
-              Find Mechanics
+              Book Mechanic
             </button>
           </div>
 
