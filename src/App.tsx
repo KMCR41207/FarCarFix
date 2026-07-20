@@ -11,6 +11,8 @@ import DiagnosisResult from './components/DiagnosisResult';
 import MechanicFinder from './components/MechanicFinder';
 import FinalCTA from './components/FinalCTA';
 import Footer from './components/Footer';
+import BookingPage from './components/BookingPage';
+import UserProfilePage from './components/UserProfilePage';
 import './index.css';
 import './features.css';
 
@@ -21,7 +23,10 @@ export interface VehicleData {
   issue: string;
 }
 
+type Page = 'home' | 'booking' | 'profile';
+
 function App() {
+  const [page, setPage] = useState<Page>('home');
   const [diagnosisData, setDiagnosisData] = useState<VehicleData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -33,10 +38,18 @@ function App() {
     }, 1500);
   };
 
+  if (page === 'booking') {
+    return <BookingPage onBack={() => setPage('home')} />;
+  }
+
+  if (page === 'profile') {
+    return <UserProfilePage onBack={() => setPage('home')} />;
+  }
+
   return (
     <div className="min-h-screen bg-white">
-      <Navbar />
-      <Hero />
+      <Navbar onBooking={() => setPage('booking')} onProfile={() => setPage('profile')} />
+      <Hero onBooking={() => setPage('booking')} />
       <Features />
       <HowItWorks />
       <WhyChoose />
@@ -46,9 +59,9 @@ function App() {
       {(diagnosisData || isLoading) && (
         <DiagnosisResult data={diagnosisData} isLoading={isLoading} />
       )}
-      <MechanicFinder />
-      <FinalCTA />
-      <Footer />
+      <MechanicFinder onBooking={() => setPage('booking')} />
+      <FinalCTA onBooking={() => setPage('booking')} />
+      <Footer onBooking={() => setPage('booking')} onProfile={() => setPage('profile')} />
     </div>
   );
 }
