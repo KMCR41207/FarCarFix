@@ -70,6 +70,7 @@ export default function AIDiagnosis() {
   const [vehicle, setVehicle] = useState('');
   const [symptom, setSymptom] = useState('');
   const [when, setWhen] = useState('While driving');
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const handler = () => {
@@ -87,7 +88,11 @@ export default function AIDiagnosis() {
   }, []);
 
   const runAnalysis = (v: string, s: string, w: string) => {
-    if (!v || !s) return;
+    if (!v || !s) {
+      setError('Please enter vehicle information and a primary symptom.');
+      return;
+    }
+    setError('');
     setLoading(true);
     setResult(null);
     setTimeout(() => {
@@ -153,7 +158,13 @@ export default function AIDiagnosis() {
                 </select>
               </div>
             </div>
+            {error && (
+              <p role="alert" style={{ color: '#fecaca', background: 'rgba(239,68,68,0.14)', border: '1px solid rgba(239,68,68,0.35)', borderRadius: '10px', padding: '0.75rem 1rem', margin: '0 0 1rem' }}>
+                {error}
+              </p>
+            )}
             <button
+              type="button"
               onClick={() => runAnalysis(vehicle, symptom, when)}
               disabled={loading || !vehicle || !symptom}
               style={{
@@ -234,7 +245,7 @@ export default function AIDiagnosis() {
 
                 {result.warning && (
                   <div style={{ background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.3)', borderRadius: '8px', padding: '1rem' }}>
-                    <p style={{ color: '#eab308', fontSize: '0.875rem', margin: 0 }}>⚠️ {result.warning}</p>
+                    <p style={{ color: '#eab308', fontSize: '0.875rem', margin: 0 }}>Warning: {result.warning}</p>
                   </div>
                 )}
               </div>
