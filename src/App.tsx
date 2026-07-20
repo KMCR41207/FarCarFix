@@ -1,11 +1,18 @@
 import React, { useState } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
+import Features from './components/Features';
+import HowItWorks from './components/HowItWorks';
+import WhyChoose from './components/WhyChoose';
+import Stats from './components/Stats';
+import Testimonials from './components/Testimonials';
+import DiagnosisForm from './components/DiagnosisForm';
 import DiagnosisResult from './components/DiagnosisResult';
 import MechanicFinder from './components/MechanicFinder';
-import Features from './components/Features';
+import FinalCTA from './components/FinalCTA';
 import Footer from './components/Footer';
 import './index.css';
+import './features.css';
 
 export interface VehicleData {
   carBrand: string;
@@ -20,7 +27,6 @@ function App() {
 
   const handleStartDiagnosis = (data: VehicleData) => {
     setIsLoading(true);
-    // 1-2 second artificial delay for animation
     setTimeout(() => {
       setDiagnosisData(data);
       setIsLoading(false);
@@ -30,12 +36,18 @@ function App() {
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
-      <Hero onStartDiagnosis={handleStartDiagnosis} />
+      <Hero />
+      <Features />
+      <HowItWorks />
+      <WhyChoose />
+      <Stats />
+      <Testimonials />
+      <DiagnosisForm onStartDiagnosis={handleStartDiagnosis} />
       {(diagnosisData || isLoading) && (
         <DiagnosisResult data={diagnosisData} isLoading={isLoading} />
       )}
       <MechanicFinder />
-      <Features />
+      <FinalCTA />
       <Footer />
     </div>
   );
