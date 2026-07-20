@@ -1,126 +1,145 @@
 import React, { useState } from 'react';
+import { motion } from 'motion/react';
+import { CalendarCheck, MapPin, Search, Star } from 'lucide-react';
 
 const mechanics = [
-  { name: 'Alex Rodriguez', specialty: 'Engine & Transmission', rating: 4.9, reviews: 312, distance: '0.8 mi', available: true, badge: 'Top Rated' },
-  { name: 'Sarah Chen', specialty: 'Electrical Systems', rating: 4.8, reviews: 245, distance: '1.2 mi', available: true, badge: 'Fast Response' },
-  { name: 'Marcus Johnson', specialty: 'Brakes & Suspension', rating: 4.7, reviews: 189, distance: '2.1 mi', available: false, badge: 'Expert' },
-  { name: 'Emily Davis', specialty: 'General Repairs', rating: 4.9, reviews: 421, distance: '1.5 mi', available: true, badge: 'Most Booked' },
+  { name: 'Alex Rodriguez', specialty: 'Engine & Transmission', experience: '12 years', rating: 4.9, reviews: 312, location: '0.8 mi away', available: true, image: '/images/slide1.jpg' },
+  { name: 'Sarah Chen', specialty: 'Electrical Systems', experience: '9 years', rating: 4.8, reviews: 245, location: '1.2 mi away', available: true, image: '/images/slide2.jpg' },
+  { name: 'Marcus Johnson', specialty: 'Brakes & Suspension', experience: '15 years', rating: 4.7, reviews: 189, location: '2.1 mi away', available: false, image: '/images/slide4.jpg' },
+  { name: 'Emily Davis', specialty: 'General Repairs', experience: '11 years', rating: 4.9, reviews: 421, location: '1.5 mi away', available: true, image: '/images/slide3.jpg' },
 ];
 
 export default function MechanicFinder() {
   const [location, setLocation] = useState('');
   const [searched, setSearched] = useState(false);
+  const [booking, setBooking] = useState('');
+  const [selectedMechanic, setSelectedMechanic] = useState<(typeof mechanics)[number] | null>(null);
 
   return (
-    <section id="mechanic" style={{ padding: '6rem 1rem', background: '#f9fafb', position: 'relative', overflow: 'hidden' }}>
-      <div style={{ position: 'absolute', top: 0, left: 0, width: '384px', height: '384px', background: 'rgba(14,165,233,0.05)', borderRadius: '50%', filter: 'blur(64px)' }} />
-      <div style={{ position: 'absolute', bottom: 0, right: 0, width: '384px', height: '384px', background: 'rgba(0,0,0,0.03)', borderRadius: '50%', filter: 'blur(64px)' }} />
+    <section id="mechanic" className="mechanic-section">
+      <div className="section-container">
+        <motion.div
+          className="section-header"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          <span className="section-label">Mechanics</span>
+          <h2>Trusted help near you</h2>
+          <p>Search your area and compare specialists by experience, rating, availability, and distance.</p>
+        </motion.div>
 
-      <div style={{ maxWidth: '1152px', margin: '0 auto', position: 'relative' }}>
-        <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-          <h2 style={{ color: '#0a0a0a', marginBottom: '1rem' }}>
-            Find a <span style={{ color: '#0EA5E9' }}>Mechanic</span>
-          </h2>
-          <p style={{ color: '#374151', fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto' }}>
-            ASE-certified professionals available on-demand, wherever you are
-          </p>
-        </div>
-
-        {/* Search bar */}
-        <div style={{ maxWidth: '600px', margin: '0 auto 3rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+        <div className="mechanic-search">
+          <Search size={20} />
           <input
             type="text"
-            placeholder="Enter your location or zip code..."
+            placeholder="Enter your location or zip code"
             value={location}
-            onChange={e => setLocation(e.target.value)}
-            style={{
-              flex: 1, minWidth: '200px', padding: '14px 18px', borderRadius: '12px',
-              border: '2px solid #e5e7eb', outline: 'none', fontSize: '1rem',
-              transition: 'border-color 0.2s',
-            }}
-            onFocus={e => (e.target.style.borderColor = '#0EA5E9')}
-            onBlur={e => (e.target.style.borderColor = '#e5e7eb')}
+            onChange={(e) => setLocation(e.target.value)}
+            aria-label="Location or zip code"
           />
-          <button
-            onClick={() => setSearched(true)}
-            style={{
-              background: '#0EA5E9', color: '#fff', border: 'none',
-              borderRadius: '12px', padding: '14px 28px', fontSize: '1rem',
-              fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s',
-              boxShadow: '0 0 20px rgba(14,165,233,0.3)',
-            }}
-            onMouseEnter={e => (e.currentTarget.style.background = '#0284c7')}
-            onMouseLeave={e => (e.currentTarget.style.background = '#0EA5E9')}
-          >
-            Search
-          </button>
+          <button type="button" onClick={() => setSearched(true)}>Search</button>
         </div>
 
-        {/* Mechanic cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1.5rem' }}>
-          {mechanics.map((m, i) => (
-            <div key={i} style={{
-              background: '#fff', borderRadius: '16px', padding: '1.5rem',
-              border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
-              transition: 'box-shadow 0.2s, transform 0.2s',
-            }}
-              onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(0,0,0,0.15)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-              onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0,0,0,0.1)'; e.currentTarget.style.transform = 'none'; }}
+        {searched && (
+          <p className="search-status">
+            Showing trusted mechanics {location ? `near ${location}` : 'near your area'}.
+          </p>
+        )}
+
+        <div className="mechanic-grid">
+          {mechanics.map((mechanic, i) => (
+            <motion.article
+              key={mechanic.name}
+              className="mechanic-card"
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.08, duration: 0.45 }}
+              whileHover={{ y: -5 }}
+              onClick={() => setSelectedMechanic(mechanic)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  setSelectedMechanic(mechanic);
+                }
+              }}
             >
-              {/* Avatar + badge */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1rem' }}>
-                <div style={{
-                  width: '52px', height: '52px', borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #0EA5E9, #0284c7)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: '#fff', fontWeight: 700, fontSize: '1.2rem', flexShrink: 0,
-                }}>
-                  {m.name.charAt(0)}
+              <img src={mechanic.image} alt={`${mechanic.name} mechanic profile`} />
+              <div className="mechanic-card-body">
+                <div className="mechanic-title-row">
+                  <div>
+                    <h3>{mechanic.name}</h3>
+                    <p>{mechanic.specialty}</p>
+                  </div>
+                  <span className={mechanic.available ? 'available' : 'busy'}>
+                    {mechanic.available ? 'Available' : 'Busy'}
+                  </span>
                 </div>
-                <div style={{ flex: 1 }}>
-                  <p style={{ fontWeight: 700, margin: 0, color: '#0a0a0a' }}>{m.name}</p>
-                  <p style={{ color: '#6b7280', fontSize: '0.8rem', margin: 0 }}>{m.specialty}</p>
+
+                <div className="mechanic-meta">
+                  <span><CalendarCheck size={16} /> {mechanic.experience}</span>
+                  <span><MapPin size={16} /> {mechanic.location}</span>
                 </div>
-                <span style={{
-                  background: m.available ? '#dcfce7' : '#f3f4f6',
-                  color: m.available ? '#15803d' : '#6b7280',
-                  fontSize: '0.7rem', fontWeight: 600, padding: '3px 8px', borderRadius: '20px',
-                }}>
-                  {m.available ? 'Available' : 'Busy'}
-                </span>
-              </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.75rem' }}>
-                <span style={{ color: '#eab308', fontSize: '1rem' }}>★</span>
-                <span style={{ fontWeight: 600, color: '#0a0a0a' }}>{m.rating}</span>
-                <span style={{ color: '#9ca3af', fontSize: '0.875rem' }}>({m.reviews} reviews)</span>
-              </div>
+                <div className="mechanic-rating">
+                  <Star size={17} fill="var(--primary)" color="var(--primary)" />
+                  <strong>{mechanic.rating}</strong>
+                  <span>({mechanic.reviews} reviews)</span>
+                </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                <span style={{ color: '#6b7280', fontSize: '0.875rem' }}>📍 {m.distance} away</span>
-                <span style={{
-                  background: 'rgba(14,165,233,0.1)', color: '#0EA5E9',
-                  fontSize: '0.75rem', fontWeight: 600, padding: '3px 10px', borderRadius: '20px',
-                }}>{m.badge}</span>
+                <button
+                  type="button"
+                  disabled={!mechanic.available}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    setBooking(`Booking request started for ${mechanic.name}. We will confirm availability shortly.`);
+                  }}
+                >
+                  {mechanic.available ? 'Book Mechanic' : 'Unavailable'}
+                </button>
               </div>
-
-              <button
-                disabled={!m.available}
-                style={{
-                  width: '100%', padding: '10px', borderRadius: '8px',
-                  background: m.available ? '#0EA5E9' : '#e5e7eb',
-                  color: m.available ? '#fff' : '#9ca3af',
-                  border: 'none', fontWeight: 600, cursor: m.available ? 'pointer' : 'not-allowed',
-                  fontSize: '0.9rem', transition: 'all 0.2s',
-                }}
-                onMouseEnter={e => { if (m.available) e.currentTarget.style.background = '#0284c7'; }}
-                onMouseLeave={e => { if (m.available) e.currentTarget.style.background = '#0EA5E9'; }}
-              >
-                {m.available ? 'Book Now' : 'Unavailable'}
-              </button>
-            </div>
+            </motion.article>
           ))}
         </div>
+
+        {booking && <p className="booking-status" role="status">{booking}</p>}
+
+        {selectedMechanic && (
+          <div className="mechanic-detail-panel" role="dialog" aria-modal="true" aria-labelledby="mechanic-detail-title">
+            <div>
+              <button type="button" className="mechanic-detail-close" onClick={() => setSelectedMechanic(null)} aria-label="Close mechanic details">
+                Close
+              </button>
+              <img src={selectedMechanic.image} alt={`${selectedMechanic.name} mechanic profile`} />
+              <div className="mechanic-detail-content">
+                <h3 id="mechanic-detail-title">{selectedMechanic.name}</h3>
+                <p>{selectedMechanic.specialty}</p>
+                <ul>
+                  <li>{selectedMechanic.experience} experience</li>
+                  <li>{selectedMechanic.rating} rating from {selectedMechanic.reviews} reviews</li>
+                  <li>{selectedMechanic.location}</li>
+                  <li>{selectedMechanic.available ? 'Available for new bookings' : 'Currently busy'}</li>
+                </ul>
+                <div className="mechanic-detail-actions">
+                  <button
+                    type="button"
+                    disabled={!selectedMechanic.available}
+                    onClick={() => setBooking(`Booking request started for ${selectedMechanic.name}. We will confirm availability shortly.`)}
+                  >
+                    Book Mechanic
+                  </button>
+                  <a href={`mailto:help@farcarfix.com?subject=Mechanic%20request%20for%20${encodeURIComponent(selectedMechanic.name)}`}>
+                    Contact
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
