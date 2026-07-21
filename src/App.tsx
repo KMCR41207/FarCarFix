@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Features from './components/Features';
@@ -12,10 +13,12 @@ import MechanicFinder from './components/MechanicFinder';
 import FinalCTA from './components/FinalCTA';
 import Footer from './components/Footer';
 import BookingPage from './components/BookingPage';
-import UserProfilePage from './components/UserProfilePage';
 import EmergencyBanner from './components/EmergencyBanner';
+import AuthPage from './components/AuthPage';
+import Dashboard from './components/Dashboard';
 import './index.css';
 import './features.css';
+import './auth.css';
 
 export interface VehicleData {
   carBrand: string;
@@ -24,9 +27,10 @@ export interface VehicleData {
   issue: string;
 }
 
-type Page = 'home' | 'booking' | 'profile';
+type Page = 'home' | 'booking' | 'profile' | 'auth';
 
-function App() {
+function AppInner() {
+  const { isAuthenticated } = useAuth();
   const [page, setPage] = useState<Page>('home');
   const [diagnosisData, setDiagnosisData] = useState<VehicleData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -39,18 +43,50 @@ function App() {
     }, 1500);
   };
 
+  const goProfile = () => {
+    if (isAuthenticated) setPage('profile');
+    else setPage('auth');
+  };
+
+  if (page === 'auth') {
+    return (
+      <AuthPage
+        onSuccess={() => setPage('profile')}
+        onBack={() => setPage('home')}
+      />
+    );
+  }
+
   if (page === 'booking') {
     return <BookingPage onBack={() => setPage('home')} />;
   }
 
   if (page === 'profile') {
-    return <UserProfilePage onBack={() => setPage('home')} />;
+    if (!isAuthenticated) {
+      return (
+        <AuthPage
+          onSuccess={() => setPage('profile')}
+          onBack={() => setPage('home')}
+        />
+      );
+    }
+    return (
+      <Dashboard
+        onBack={() => setPage('home')}
+        onNewDiagnosis={() => { setPage('home'); setTimeout(() => document.getElementById('diagnosis')?.scrollIntoView({ behavior: 'smooth' }), 100); }}
+        onBooking={() => setPage('booking')}
+      />
+    );
   }
 
   return (
     <div className="min-h-screen bg-white">
       <EmergencyBanner />
-      <Navbar onBooking={() => setPage('booking')} onProfile={() => setPage('profile')} />
+      <Navbar
+        onBooking={() => setPage('booking')}
+        onProfile={goProfile}
+        isAuthenticated={isAuthenticated}
+      />
       <Hero onBooking={() => setPage('booking')} />
       <Features />
       <HowItWorks />
@@ -63,9 +99,18 @@ function App() {
       )}
       <MechanicFinder onBooking={() => setPage('booking')} />
       <FinalCTA onBooking={() => setPage('booking')} />
-      <Footer onBooking={() => setPage('booking')} onProfile={() => setPage('profile')} />
+      <Footer
+        onBooking={() => setPage('booking')}
+        onProfile={goProfile}
+      />
     </div>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppInner />
+    </AuthProvider>
+  );
+}

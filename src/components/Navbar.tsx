@@ -7,7 +7,7 @@ const navLinks = [
   { name: 'About', href: '#about' },
 ];
 
-export default function Navbar({ onBooking, onProfile }: { onBooking: () => void; onProfile: () => void }) {
+export default function Navbar({ onBooking, onProfile, isAuthenticated }: { onBooking: () => void; onProfile: () => void; isAuthenticated?: boolean }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState('home');
@@ -88,8 +88,9 @@ export default function Navbar({ onBooking, onProfile }: { onBooking: () => void
             <button type="button" onClick={onBooking} className="btn-secondary" style={{ padding: '0.625rem 1.25rem', fontSize: '0.875rem' }}>
               Book Mechanic
             </button>
-            <button type="button" onClick={onProfile} style={{ background: 'transparent', border: '1.5px solid var(--gray-200)', borderRadius: '999px', width: 38, height: 38, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem' }} aria-label="My Profile">
-              👤
+            <button type="button" onClick={onProfile}
+              style={{ background: isAuthenticated ? 'rgba(33,150,243,0.12)' : 'transparent', border: isAuthenticated ? '1.5px solid rgba(33,150,243,0.4)' : '1.5px solid var(--gray-200)', borderRadius: '999px', width: 38, height: 38, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem' }} aria-label="My Profile">
+              {isAuthenticated ? '✅' : '👤'}
             </button>
           </div>
 
