@@ -13,6 +13,7 @@ import FinalCTA from './components/FinalCTA';
 import Footer from './components/Footer';
 import BookingPage from './components/BookingPage';
 import UserProfilePage from './components/UserProfilePage';
+import EmergencyBanner from './components/EmergencyBanner';
 import './index.css';
 import './features.css';
 
@@ -48,6 +49,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-white">
+      <EmergencyBanner />
       <Navbar onBooking={() => setPage('booking')} onProfile={() => setPage('profile')} />
       <Hero onBooking={() => setPage('booking')} />
       <Features />
