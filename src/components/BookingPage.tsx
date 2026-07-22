@@ -7,8 +7,6 @@ interface BookingForm {
   email: string;
   vehicle: string;
   issue: string;
-  date: string;
-  time: string;
   mechanic: string;
   serviceType: string;
   address: string;
@@ -29,9 +27,6 @@ const SERVICE_TYPES = [
   { id: 'tow', label: '🚛 Towing', desc: 'Tow to nearest garage' },
 ];
 
-const TIME_SLOTS = ['8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM',
-  '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM', '6:00 PM'];
-
 type Step = 1 | 2 | 3 | 4;
 
 interface Props {
@@ -43,10 +38,10 @@ export default function BookingPage({ onBack }: Props) {
   const [confirmed, setConfirmed] = useState(false);
   const [form, setForm] = useState<BookingForm>({
     name: '', phone: '', email: '', vehicle: '', issue: '',
-    date: '', time: '', mechanic: '', serviceType: '', address: '', notes: '',
+    mechanic: '', serviceType: '', address: '', notes: '',
   });
 
-  const today = new Date().toISOString().split('T')[0];
+  const bookingRef = `FCF-${Date.now().toString(36).toUpperCase().slice(-6)}`;
 
   function update(key: keyof BookingForm, val: string) {
     setForm(prev => ({ ...prev, [key]: val }));
@@ -55,7 +50,7 @@ export default function BookingPage({ onBack }: Props) {
   function canProceed(): boolean {
     if (step === 1) return !!(form.name && form.phone && form.vehicle && form.issue);
     if (step === 2) return !!(form.serviceType);
-    if (step === 3) return !!(form.mechanic && form.date && form.time);
+    if (step === 3) return !!(form.mechanic);
     return true;
   }
 
@@ -63,8 +58,6 @@ export default function BookingPage({ onBack }: Props) {
     setConfirmed(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
-
-  const bookingRef = `FCF-${Date.now().toString(36).toUpperCase().slice(-6)}`;
 
   if (confirmed) {
     return (
@@ -92,7 +85,6 @@ export default function BookingPage({ onBack }: Props) {
               { label: 'Vehicle', value: form.vehicle },
               { label: 'Service', value: SERVICE_TYPES.find(s => s.id === form.serviceType)?.label ?? form.serviceType },
               { label: 'Mechanic', value: MECHANICS.find(m => m.id === form.mechanic)?.name ?? form.mechanic },
-              { label: 'Date & Time', value: `${form.date} at ${form.time}` },
             ].map((row, i) => (
               <div key={i} className="booking-confirm-row">
                 <span style={{ color: '#9ca3af', fontSize: '0.8rem' }}>{row.label}</span>
@@ -105,7 +97,7 @@ export default function BookingPage({ onBack }: Props) {
               type="button"
               className="booking-action-btn booking-btn-primary"
               onClick={() => {
-                const text = `FarCarFix Booking Confirmed! Ref: ${bookingRef} | Vehicle: ${form.vehicle} | Date: ${form.date} at ${form.time}`;
+                const text = `FarCarFix Booking Confirmed! Ref: ${bookingRef} | Vehicle: ${form.vehicle} | Mechanic: ${MECHANICS.find(m => m.id === form.mechanic)?.name ?? form.mechanic} | Service: ${SERVICE_TYPES.find(s => s.id === form.serviceType)?.label ?? form.serviceType}`;
                 window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
               }}
             >
@@ -144,7 +136,7 @@ export default function BookingPage({ onBack }: Props) {
 
       {/* Step progress */}
       <div className="booking-steps">
-        {['Your Details', 'Service Type', 'Schedule', 'Confirm'].map((label, i) => {
+        {['Your Details', 'Service Type', 'Mechanic', 'Confirm'].map((label, i) => {
           const n = (i + 1) as Step;
           const done = step > n;
           const active = step === n;
@@ -236,14 +228,14 @@ export default function BookingPage({ onBack }: Props) {
             </motion.div>
           )}
 
-          {/* Step 3 — Schedule */}
+          {/* Step 3 — Choose Mechanic */}
           {step === 3 && (
             <motion.div key="s3" className="booking-panel"
               initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }}>
-              <h3 className="booking-panel-title">📅 Choose Mechanic & Time</h3>
+              <h3 className="booking-panel-title">🔧 Choose Your Mechanic</h3>
 
               <p className="booking-section-label">Available Mechanics</p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: '1.5rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: '1rem' }}>
                 {MECHANICS.map(m => (
                   <button
                     key={m.id}
@@ -264,39 +256,17 @@ export default function BookingPage({ onBack }: Props) {
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                       <span style={{ color: '#f59e0b', fontSize: '0.8rem' }}>★ {m.rating}</span>
                       <span className={`booking-avail-badge ${m.available ? 'open' : 'busy'}`}>
-                        {m.available ? 'Available' : 'Busy'}
+                        {m.available ? 'Available Now' : 'Busy'}
                       </span>
                     </div>
                   </button>
                 ))}
               </div>
 
-              <div className="booking-form-grid">
-                <div>
-                  <label className="booking-label">Select Date *</label>
-                  <input
-                    type="date"
-                    className="booking-input"
-                    min={today}
-                    value={form.date}
-                    onChange={e => update('date', e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label className="booking-label">Select Time *</label>
-                  <div className="booking-time-grid">
-                    {TIME_SLOTS.map(t => (
-                      <button
-                        key={t}
-                        type="button"
-                        className={`booking-time-slot ${form.time === t ? 'selected' : ''}`}
-                        onClick={() => update('time', t)}
-                      >
-                        {t}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+              <div style={{ padding: '0.85rem 1rem', background: 'rgba(33,150,243,0.08)', border: '1px solid rgba(33,150,243,0.2)', borderRadius: 10 }}>
+                <p style={{ margin: 0, color: '#90CAF9', fontSize: '0.82rem', fontWeight: 600 }}>
+                  ⚡ Mechanic will arrive as soon as possible after confirmation
+                </p>
               </div>
             </motion.div>
           )}
@@ -315,8 +285,6 @@ export default function BookingPage({ onBack }: Props) {
                   { label: 'Issue', value: form.issue },
                   { label: 'Service Type', value: SERVICE_TYPES.find(s => s.id === form.serviceType)?.label ?? '—' },
                   { label: 'Mechanic', value: MECHANICS.find(m => m.id === form.mechanic)?.name ?? '—' },
-                  { label: 'Date', value: form.date },
-                  { label: 'Time', value: form.time },
                   { label: 'Address', value: form.address || '—' },
                 ].map((row, i) => (
                   <div key={i} className="booking-review-row">
@@ -338,7 +306,7 @@ export default function BookingPage({ onBack }: Props) {
               <div className="booking-terms">
                 <span>🔒</span>
                 <p style={{ margin: 0, color: '#6b7280', fontSize: '0.78rem' }}>
-                  By confirming, you agree to FarCarFix's terms. The mechanic will contact you 30 minutes before arrival.
+                  By confirming, you agree to FarCarFix's terms. The mechanic will be dispatched immediately and will contact you shortly.
                 </p>
               </div>
             </motion.div>
@@ -368,7 +336,7 @@ export default function BookingPage({ onBack }: Props) {
               className="booking-action-btn booking-btn-confirm"
               onClick={handleConfirm}
             >
-              🗓️ Confirm Booking
+              🚨 Dispatch Mechanic Now
             </button>
           )}
         </div>
